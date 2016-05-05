@@ -7,6 +7,17 @@ and more).
 This Node.JS client lets you register your bot with Botmetrics and
 starts metrics collection.
 
+### Installation
+
+To install this as part of your Node.JS project, add this to your
+`dependencies` in your application's package.json:
+
+`botmetrics`
+
+or run
+
+`$ npm install --save botmetrics`
+
 ### Usage
 
 Log in to your [BotMetrics](https://getbotmetrics.com) account, navigate
@@ -42,4 +53,11 @@ function(err, status) {
 
 });
 ```
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/botmetrics/botmetrics.js. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
