@@ -1,0 +1,20 @@
+{
+  "name": "botmetrics",
+  "version": "0.0.1",
+  "description": "Node.JS client to register your bot on getbotmetrics.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "./script/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/botmetrics/botmetrics.js"
+  },
+  "keywords": [
+    "slack",
+    "bots",
+    "metrics"
+  ],
+  "author": "Arun Thampi",
+  "license": "MIT"
+}
