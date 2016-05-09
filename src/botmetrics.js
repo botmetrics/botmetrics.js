@@ -7,13 +7,9 @@ Botmetrics.registerBot = function(token, opts, callback) {
      callback = opts;
   }
 
-  var teamId = (opts && opts['teamId']) ? opts['teamId'] : process.env.BOTMETRICS_TEAM_ID;
   var botId = (opts && opts['botId']) ? opts['botId'] : process.env.BOTMETRICS_BOT_ID;
   var apiKey = (opts && opts['apiKey']) ? opts['apiKey'] : process.env.BOTMETRICS_API_KEY;
 
-  if(!teamId || teamId == "") {
-    callback(new Error("You have to either set the env variable BOTMETRICS_TEAM_ID or pass in an as argument teamId"));
-  }
   if(!botId || botId == "") {
     callback(new Error("You have to either set the env variable BOTMETRICS_BOT_ID or pass in an as argument botId"));
   }
@@ -23,7 +19,7 @@ Botmetrics.registerBot = function(token, opts, callback) {
 
   var createdAt = (opts && opts['createdAt']) ? opts['createdAt'] : null;
   var host = process.env.BOTMETRICS_API_HOST || 'https://www.getbotmetrics.com';
-  var url = host + "/teams/" + teamId + "/bots/" + botId + "/instances";
+  var url = host + "/bots/" + botId + "/instances";
 
   var params =  {
     instance: {

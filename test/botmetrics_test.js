@@ -14,7 +14,6 @@ describe('Botmetrics', function() {
       var statusCode;
 
       beforeEach(function() {
-        process.env.BOTMETRICS_TEAM_ID = 'botmetrics-team-id';
         process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
         process.env.BOTMETRICS_API_KEY = 'botmetrics-api-key';
 
@@ -24,12 +23,11 @@ describe('Botmetrics', function() {
                 'Content-Type': 'application/json'
               }
             })
-            .post('/teams/botmetrics-team-id/bots/botmetrics-bot-id/instances', params)
+            .post('/bots/botmetrics-bot-id/instances', params)
             .reply(statusCode);
       });
 
       afterEach(function() {
-        process.env.BOTMETRICS_TEAM_ID = null;
         process.env.BOTMETRICS_BOT_ID = null;
         process.env.BOTMETRICS_API_KEY = null;
       });
@@ -113,7 +111,7 @@ describe('Botmetrics', function() {
                 'Content-Type': 'application/json'
               }
             })
-            .post('/teams/botmetrics-team-id/bots/botmetrics-bot-id/instances', params)
+            .post('/bots/botmetrics-bot-id/instances', params)
             .reply(statusCode);
       });
 
@@ -123,7 +121,7 @@ describe('Botmetrics', function() {
         });
 
         it('should make a call to the Botmetrics API registering the bot', function(done) {
-          Botmetrics.registerBot('bot-token', {teamId: 'botmetrics-team-id', apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
+          Botmetrics.registerBot('bot-token', {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
             expect(status).to.be.true;
             expect(scope.isDone()).to.be.true;
             done();
@@ -137,7 +135,7 @@ describe('Botmetrics', function() {
         });
 
         it('should make a call to the Botmetrics API registering the bot', function(done) {
-          Botmetrics.registerBot('bot-token', {teamId: 'botmetrics-team-id', apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
+          Botmetrics.registerBot('bot-token', {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
             expect(err).to.not.be.null;
             expect(err.message).to.eql('Unexpected Status Code from Botmetrics API');
             expect(status).to.be.false;
@@ -149,25 +147,7 @@ describe('Botmetrics', function() {
     });
   });
 
-  context('with teamId not set', function() {
-    it('should return an error', function() {
-      Botmetrics.registerBot('bot-token', function(err, status) {
-        expect(err).to.not.be.null;
-        expect(err.message).to.eql('You have to either set the env variable BOTMETRICS_TEAM_ID or pass in an as argument teamId');
-        expect(status).to.be.false;
-      });
-    });
-  });
-
   context('with botId not set', function() {
-    beforeEach(function() {
-      process.env.BOTMETRICS_TEAM_ID = 'botmetrics-team-id';
-    });
-
-    afterEach(function() {
-      process.env.BOTMETRICS_TEAM_ID = null;
-    });
-
     it('should return an error', function() {
       Botmetrics.registerBot('bot-token', function(err, status) {
         expect(err).to.not.be.null;
@@ -179,12 +159,10 @@ describe('Botmetrics', function() {
 
   context('with apiKey not set', function() {
     beforeEach(function() {
-      process.env.BOTMETRICS_TEAM_ID = 'botmetrics-team-id';
       process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
     });
 
     afterEach(function() {
-      process.env.BOTMETRICS_TEAM_ID = null;
       process.env.BOTMETRICS_BOT_ID = null;
     });
 
