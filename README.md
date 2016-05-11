@@ -51,6 +51,42 @@ BotMetrics.registerBot('bot-token', {createdAt: 1462318092}, function(err, statu
 
 });
 ```
+
+### Messaging a user or channel
+
+You can use Botmetrics to message a user (via DM) or a channel for a
+given team. You can do this like this:
+
+```javascript
+BotMetrics.message('slack-team-id', {user: 'USLACKBOT', text: 'hello there'}, function(err, status) {
+
+});
+```
+
+For a channel, pass the Slack Channel ID as a parameter:
+
+```javascript
+BotMetrics.message('slack-team-id', {channel: 'CCAFEDEAD1', text: 'hello there'}, function(err, status) {
+
+});
+```
+
+To send attachments, you can send an attachments array:
+
+```javascript
+Botmetrics.message('slack-team-id', {channel: 'CCAFEDEAD', attachments: [{"fallback": "hello", "text": "hello"}] }, function(err, status) {
+  expect(status).to.be.true;
+  expect(scope.isDone()).to.be.true;
+  done();
+});
+```
+
+To read more about Slack attachments, you can check it out at this [Slack
+API Docs page](https://api.slack.com/docs/attachments).
+
+BotMetrics will queue your message for sending. If your message is
+correctly formatted, you will receive `status=true` in the callback.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/botmetrics/botmetrics.js. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
