@@ -175,6 +175,152 @@ describe('Botmetrics', function() {
     });
   });
 
+  describe('.track', function() {
+    var eventToTrack = {
+      name: 'event-name',
+      timestamp: '123456789.0'
+    };
+
+    context('with environment variables set', function() {
+      var params;
+      var scope;
+      var statusCode;
+
+      beforeEach(function() {
+        process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
+        process.env.BOTMETRICS_API_KEY = 'botmetrics-api-key';
+
+        scope = nock('https://www.getbotmetrics.com', {
+            reqheaders: {
+                'Authorization': 'botmetrics-api-key',
+                'Content-Type': 'application/json'
+              }
+            })
+            .post('/bots/botmetrics-bot-id/events', params)
+            .reply(statusCode);
+      });
+
+      afterEach(function() {
+        process.env.BOTMETRICS_BOT_ID = null;
+        process.env.BOTMETRICS_API_KEY = null;
+      });
+
+      context('API returns the correct status code', function() {
+        before(function() {
+          statusCode = 201;
+        });
+
+        context('with the user param', function() {
+          before(function() {
+            params = {
+              event: JSON.stringify(eventToTrack)
+            };
+          });
+
+          it('should make a call to the Botmetrics API sending a message', function(done) {
+            Botmetrics.track(eventToTrack, function(err, status) {
+              expect(status).to.be.true;
+              expect(scope.isDone()).to.be.true;
+              done();
+            });
+          });
+        });
+      });
+
+      context('API returns an unexpected status code', function() {
+        before(function() {
+          statusCode = 400;
+          params = {
+            event: JSON.stringify(eventToTrack)
+          };
+        });
+
+        it('should make a call to the Botmetrics API registering the bot', function(done) {
+          Botmetrics.track(eventToTrack, function(err, status) {
+            expect(err).to.not.be.null;
+            expect(err.message).to.eql('Unexpected Status Code from Botmetrics API');
+            expect(status).to.be.false;
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+    });
+
+    context('without environment variables set, but passed in correctly as params', function() {
+      var params;
+      var scope;
+      var statusCode;
+
+      beforeEach(function() {
+        params = {
+          event: JSON.stringify(eventToTrack)
+        };
+
+        scope = nock('https://www.getbotmetrics.com', {
+            reqheaders: {
+                'Authorization': 'botmetrics-api-key',
+                'Content-Type': 'application/json'
+              }
+            })
+            .post('/bots/botmetrics-bot-id/events', params)
+            .reply(statusCode);
+      });
+
+      context('API returns the correct status code', function() {
+        before(function() {
+          statusCode = 201;
+        });
+
+        it('should make a call to the Botmetrics API to send the message', function(done) {
+          Botmetrics.track(eventToTrack, {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
+            expect(status).to.be.true;
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+
+      context('API returns an unexpected status code', function() {
+        before(function() {
+          statusCode = 400;
+
+          params = {
+            event: JSON.stringify(eventToTrack)
+          };
+        });
+
+        it('should make a call to the Botmetrics API registering the bot', function(done) {
+          Botmetrics.track(eventToTrack, {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, status) {
+            expect(err).to.not.be.null;
+            expect(err.message).to.eql('Unexpected Status Code from Botmetrics API');
+            expect(status).to.be.false;
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+    });
+
+    context('with apiKey not set', function() {
+      beforeEach(function() {
+        process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
+      });
+
+      afterEach(function() {
+        process.env.BOTMETRICS_BOT_ID = null;
+      });
+
+      it('should return an error', function() {
+        Botmetrics.track(eventToTrack, function(err, status) {
+          expect(err).to.not.be.null;
+          expect(err.message).to.eql('You have to either set the env variable BOTMETRICS_API_KEY or pass in an as argument apiKey');
+          expect(status).to.be.false;
+        });
+      });
+    });
+  });
+
   describe('.message', function() {
     context('with invalid params', function() {
       beforeEach(function() {

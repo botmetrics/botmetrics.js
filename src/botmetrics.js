@@ -112,4 +112,40 @@ Botmetrics.message = function(teamId, opts, callback) {
   });
 };
 
+Botmetrics.track = function(event, opts, callback) {
+  var messageOpts = {};
+
+  if(typeof opts == 'function') {
+    callback = opts;
+  } else {
+    messageOpts = opts;
+  }
+
+  var botId = (messageOpts && messageOpts['botId']) ? messageOpts['botId'] : process.env.BOTMETRICS_BOT_ID;
+  var apiKey = (messageOpts && messageOpts['apiKey']) ? messageOpts['apiKey'] : process.env.BOTMETRICS_API_KEY;
+
+  if(!botId || botId == "") {
+    callback(new Error("You have to either set the env variable BOTMETRICS_BOT_ID or pass in an as argument botId"));
+  }
+  if(!apiKey || apiKey == "") {
+    callback(new Error("You have to either set the env variable BOTMETRICS_API_KEY or pass in an as argument apiKey"));
+  }
+
+  var host = process.env.BOTMETRICS_API_HOST || 'https://www.getbotmetrics.com';
+  var url = host + "/bots/" + botId + "/events";
+
+  var http = HttpClient.create(url);
+  http.header('Authorization', apiKey).
+       header('Content-Type', 'application/json').
+       post(JSON.stringify({event: JSON.stringify(event)}))(function(err, resp, body) {
+    if(err) {
+      callback(err, false);
+    } else if (resp.statusCode != 201) {
+      callback(new Error("Unexpected Status Code from Botmetrics API"), false);
+    } else {
+      callback(null, true);
+    }
+  });
+};
+
 module.exports = Botmetrics;
