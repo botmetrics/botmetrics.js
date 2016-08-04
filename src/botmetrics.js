@@ -140,7 +140,7 @@ Botmetrics.track = function(event, opts, callback) {
        post(JSON.stringify({event: JSON.stringify(event)}))(function(err, resp, body) {
     if(err) {
       callback(err, false);
-    } else if (resp.statusCode != 201) {
+    } else if (resp.statusCode != 202) {
       callback(new Error("Unexpected Status Code from Botmetrics API"), false);
     } else {
       callback(null, true);

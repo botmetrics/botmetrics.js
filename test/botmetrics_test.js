@@ -207,7 +207,7 @@ describe('Botmetrics', function() {
 
       context('API returns the correct status code', function() {
         before(function() {
-          statusCode = 201;
+          statusCode = 202;
         });
 
         context('with the user param', function() {
@@ -269,7 +269,7 @@ describe('Botmetrics', function() {
 
       context('API returns the correct status code', function() {
         before(function() {
-          statusCode = 201;
+          statusCode = 202;
         });
 
         it('should make a call to the Botmetrics API to send the message', function(done) {
