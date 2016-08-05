@@ -1,4 +1,4 @@
-## Botmetrics
+# Botmetrics
 
 [Botmetrics](https://www.getbotmetrics.com) is a service that lets you
 collect & analyze metrics from your bots (Slack, Facebook, Kik, Telegram
@@ -7,7 +7,7 @@ and more).
 This Node.JS client lets you register your bot with Botmetrics and
 starts metrics collection.
 
-### Installation
+## Installation
 
 To install this as part of your Node.JS project, add this to your
 `dependencies` in your application's package.json:
@@ -18,7 +18,37 @@ or run
 
 `$ npm install --save botmetrics`
 
-### Usage
+## Usage (Facebook)
+
+Register your Facebook bot with
+[Botmetrics](https://getbotmetrics.com). Once you have done so, navigate to "Bot Settings" and find out your Bot ID and API Key.
+
+Set the following environment variables with the Bot ID and API
+Key respectively.
+
+```
+BOTMETRICS_BOT_ID=your-bot-id
+BOTMETRICS_API_KEY=your-api-key
+```
+
+### track
+
+Call the `track` API in the webhook receiver that handles all of your Facebook messenger callbacks.
+
+```javascript
+BotMetrics.track(req.params);
+```
+
+If you are using an Express app, this is what it would look like:
+
+```javascript
+app.post('/webhooks', function(req, res) {
+  BotMetrics.track(req.body);
+});
+
+```
+
+## Usage (Slack)
 
 Log in to your [BotMetrics](https://getbotmetrics.com) account, navigate
 to "Bot Settings" and find out your Bot ID and API Key.
