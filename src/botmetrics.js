@@ -121,6 +121,10 @@ Botmetrics.track = function(event, opts, callback) {
     messageOpts = opts;
   }
 
+  if(!callback) {
+    callback = function(err, status) {};
+  }
+
   var botId = (messageOpts && messageOpts['botId']) ? messageOpts['botId'] : process.env.BOTMETRICS_BOT_ID;
   var apiKey = (messageOpts && messageOpts['apiKey']) ? messageOpts['apiKey'] : process.env.BOTMETRICS_API_KEY;
 
@@ -137,7 +141,7 @@ Botmetrics.track = function(event, opts, callback) {
   var http = HttpClient.create(url);
   http.header('Authorization', apiKey).
        header('Content-Type', 'application/json').
-       post(JSON.stringify({event: JSON.stringify(event)}))(function(err, resp, body) {
+       post(JSON.stringify({event: JSON.stringify(event), format: 'json'}))(function(err, resp, body) {
     if(err) {
       callback(err, false);
     } else if (resp.statusCode != 202) {
