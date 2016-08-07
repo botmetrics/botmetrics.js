@@ -36,16 +36,32 @@ BOTMETRICS_API_KEY=your-api-key
 Call the `track` API in the webhook receiver that handles all of your Facebook messenger callbacks.
 
 ```javascript
-BotMetrics.track(req.params);
+BotMetrics.track(req.body);
 ```
 
 If you are using an Express app, this is what it would look like:
 
 ```javascript
+// Remember to run `npm install --save botmetrics` in your app.
+//
+// If you are using an Express-based app, parse the request body
+// and pass along req.body as an argument to Botmetrics
+// for example:
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var Botmetrics = require('botmetrics');
+
+app.use(bodyParser.json()); // for parsing application/json
+
 app.post('/webhooks', function(req, res) {
-  BotMetrics.track(req.body);
+  Botmetrics.track(req.body);
+  res.status(200).send("");
 });
 
+app.listen(5000, function () {
+  console.log('facebook bot listening on port 5000!');
+});
 ```
 
 ## Usage (Slack)
