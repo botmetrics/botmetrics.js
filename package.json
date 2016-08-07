@@ -1,6 +1,6 @@
 {
   "name": "botmetrics",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Node.JS client to register your bot on getbotmetrics.com",
   "main": "index.js",
   "scripts": {
