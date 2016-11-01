@@ -72,6 +72,23 @@ app.listen(5000, function () {
 });
 ```
 
+## Usage (Kik)
+
+Register your Kik bot with
+[Botmetrics](https://getbotmetrics.com). Once you have done so, navigate to "Bot Settings" and find out your Bot ID and API Key.
+
+Set the following environment variables with the Bot ID and API
+Key respectively.
+
+```
+BOTMETRICS_BOT_ID=your-bot-id
+BOTMETRICS_API_KEY=your-api-key
+```
+
+### track
+
+Call the `track` API in the webhook receiver that handles all of your Kik bot callbacks.
+
 ## Usage (Slack)
 
 Log in to your [BotMetrics](https://getbotmetrics.com) account, navigate
