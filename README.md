@@ -122,6 +122,20 @@ BotMetrics.registerBot('bot-token', {createdAt: 1462318092}, function(err, statu
 
 });
 ```
+### User Enrichment
+
+You can retroactively add information to users of your bot, for e.g.
+timezone information. If the ID of your user is `bot-user-id` (this is
+the ID you receive from the provider, in the case of Facebook, the Page
+Scoped ID of the user), you can call the `enrichUser` API to add more
+information:
+
+```javascript
+BotMetrics.enrichUser('bot-user-id', {timezone: 'US/Pacific'},
+function(err, status) {
+
+});
+```
 
 ### Messaging a user or channel
 
