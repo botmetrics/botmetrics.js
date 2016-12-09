@@ -137,6 +137,32 @@ function(err, status) {
 });
 ```
 
+### Shortening Links
+
+You can shorten a link that you want to send your users via a bot so
+that you can track link follows with
+[Botmetrics](https://www.getbotmetrics.com). If the ID of your user is `bot-user-id` (this is
+the ID you receive from the provider, in the case of Facebook, the Page
+Scoped ID of the user), you can call the `shortenLink` API to attribute
+the link follow to that user.
+
+```javascript
+BotMetrics.shortenLink('https://www.google.com', 'bot-user-id', function(err, shortenedLink) {
+  // shortenedLink will look something like https://bot.af/to/deadbeef
+  // which you can then use to send as part of your message payload
+});
+```
+
+For Slack users, you will also have to send the `team_id` as a
+parameter:
+
+```javascript
+BotMetrics.shortenLink('https://www.google.com', 'bot-user-id', {team_id: 'TDEADBEEF1'}, function(err, shortenedLink) {
+  // shortenedLink will look something like https://bot.af/to/deadbeef
+  // which you can then use to send as part of your message payload
+});
+```
+
 ### Messaging a user or channel
 
 You can use Botmetrics to message a user (via DM) or a channel for a
