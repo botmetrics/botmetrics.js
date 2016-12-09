@@ -469,6 +469,150 @@ describe('Botmetrics', function() {
     });
   });
 
+  describe('.shortenLink', function() {
+    var url = 'https://www.google.com';
+    var userId = "user-id";
+
+    context('with environment variables set', function() {
+      var params;
+      var scope;
+      var statusCode;
+
+      beforeEach(function() {
+        process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
+        process.env.BOTMETRICS_API_KEY = 'botmetrics-api-key';
+
+        scope = nock('https://www.getbotmetrics.com', {
+            reqheaders: {
+                'Authorization': 'botmetrics-api-key',
+                'Content-Type': 'application/json'
+              }
+            })
+            .post('/bots/botmetrics-bot-id/short_links', params)
+            .reply(statusCode, '{"url": "https://bot.af/to/deadbeef"}');
+      });
+
+      afterEach(function() {
+        process.env.BOTMETRICS_BOT_ID = null;
+        process.env.BOTMETRICS_API_KEY = null;
+      });
+
+      context('API returns the correct status code', function() {
+        before(function() {
+          statusCode = 200;
+        });
+
+        context('without params', function() {
+          before(function() {
+            params = {
+              url: url,
+              user_id: userId
+            };
+          });
+
+          it('should make a call to the Botmetrics API for enriching a user', function(done) {
+            Botmetrics.shortenLink(url, userId, function(err, url) {
+              expect(url).to.eql('https://bot.af/to/deadbeef');
+              expect(scope.isDone()).to.be.true;
+              done();
+            });
+          });
+        });
+      });
+
+      context('API returns an unexpected status code', function() {
+        before(function() {
+          statusCode = 400;
+        });
+
+        it('should make a call to the Botmetrics API for enriching a user', function(done) {
+          Botmetrics.shortenLink(url, userId, function(err, url) {
+            expect(err).to.not.be.null;
+            expect(err.message).to.eql('Unexpected Status Code from Botmetrics API');
+            expect(url).to.be.null;
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+    });
+
+    context('without environment variables set, but passed in correctly as params', function() {
+      var params;
+      var scope;
+      var statusCode;
+
+      beforeEach(function() {
+        params = {
+          url: url,
+          user_id: userId
+        };
+
+        scope = nock('https://www.getbotmetrics.com', {
+            reqheaders: {
+                'Authorization': 'botmetrics-api-key',
+                'Content-Type': 'application/json'
+              }
+            })
+            .post('/bots/botmetrics-bot-id/short_links', params)
+            .reply(statusCode, '{"url":"https://bot.af/to/deadbeef"}');
+      });
+
+      context('API returns the correct status code', function() {
+        before(function() {
+          statusCode = 200;
+        });
+
+        it('should make a call to the Botmetrics API to send the message', function(done) {
+          Botmetrics.shortenLink(url, userId, {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, url) {
+            expect(url).to.eql('https://bot.af/to/deadbeef');
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+
+      context('API returns an unexpected status code', function() {
+        before(function() {
+          statusCode = 400;
+
+          params = {
+            url: url,
+            user_id: userId
+          };
+        });
+
+        it('should make a call to the Botmetrics API registering the bot', function(done) {
+          Botmetrics.shortenLink(url, userId, {apiKey: 'botmetrics-api-key', botId: 'botmetrics-bot-id'}, function(err, url) {
+            expect(err).to.not.be.null;
+            expect(err.message).to.eql('Unexpected Status Code from Botmetrics API');
+            expect(url).to.be.null;
+            expect(scope.isDone()).to.be.true;
+            done();
+          });
+        });
+      });
+    });
+
+    context('with apiKey not set', function() {
+      beforeEach(function() {
+        process.env.BOTMETRICS_BOT_ID = 'botmetrics-bot-id';
+      });
+
+      afterEach(function() {
+        process.env.BOTMETRICS_BOT_ID = null;
+      });
+
+      it('should return an error', function() {
+        Botmetrics.shortenLink(url, userId, function(err, url) {
+          expect(err).to.not.be.null;
+          expect(err.message).to.eql('You have to either set the env variable BOTMETRICS_API_KEY or pass in an as argument apiKey');
+          expect(url).to.be.null;
+        });
+      });
+    });
+  });
+
   describe('.message', function() {
     context('with invalid params', function() {
       beforeEach(function() {

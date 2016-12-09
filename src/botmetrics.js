@@ -178,8 +178,6 @@ Botmetrics.enrichUser = function(userId, userParams, callback) {
   delete messageOpts['botId'];
   delete messageOpts['apiKey'];
 
-  console.log(messageOpts);
-
   var host = process.env.BOTMETRICS_API_HOST || 'https://www.getbotmetrics.com';
   var url = host + "/bots/" + botId + "/users/" + userId;
 
@@ -193,6 +191,54 @@ Botmetrics.enrichUser = function(userId, userParams, callback) {
       callback(new Error("Unexpected Status Code from Botmetrics API"), false);
     } else {
       callback(null, true);
+    }
+  });
+};
+
+Botmetrics.shortenLink = function(url, userId, params, callback) {
+  var shortenLinkOpts = {};
+
+  if(typeof params == 'function') {
+    callback = params;
+  } else {
+    shortenLinkOpts = params;
+  }
+
+  if(!callback) {
+    callback = function(err, url) {};
+  }
+
+  var botId = (shortenLinkOpts && shortenLinkOpts['botId']) ? shortenLinkOpts['botId'] : process.env.BOTMETRICS_BOT_ID;
+  var apiKey = (shortenLinkOpts && shortenLinkOpts['apiKey']) ? shortenLinkOpts['apiKey'] : process.env.BOTMETRICS_API_KEY;
+
+  if(!botId || botId == "") {
+    callback(new Error("You have to either set the env variable BOTMETRICS_BOT_ID or pass in an as argument botId"));
+  }
+  if(!apiKey || apiKey == "") {
+    callback(new Error("You have to either set the env variable BOTMETRICS_API_KEY or pass in an as argument apiKey"));
+  }
+
+  delete shortenLinkOpts['botId'];
+  delete shortenLinkOpts['apiKey'];
+
+  shortenLinkOpts['user_id'] = userId;
+  shortenLinkOpts['url'] = url;
+  shortenLinkOpts['format'] = 'json';
+
+  var host = process.env.BOTMETRICS_API_HOST || 'https://www.getbotmetrics.com';
+  var url = host + "/bots/" + botId + "/short_links";
+
+  var http = HttpClient.create(url);
+  http.header('Authorization', apiKey).
+       header('Content-Type', 'application/json').
+       post(JSON.stringify(shortenLinkOpts))(function(err, resp, body) {
+    if(err) {
+      callback(err, null);
+    } else if (resp.statusCode != 200) {
+      callback(new Error("Unexpected Status Code from Botmetrics API"), null);
+    } else {
+      jsonResponse = JSON.parse(body);
+      callback(null, jsonResponse['url']);
     }
   });
 };
